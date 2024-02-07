@@ -99,6 +99,10 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias grep='grep --color=always'
+alias ls='ls --color=always'
+alias less='less -R'
+
 DISABLE_AUTO_UPDATE=true
 DISABLE_UPDATE_PROMPT=true
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
