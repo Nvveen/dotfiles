@@ -1,3 +1,6 @@
+# enable ssh-agent forwarding
+zstyle :omz:plugins:ssh-agent agent-forwarding yes
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
