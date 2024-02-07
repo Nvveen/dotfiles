@@ -7,6 +7,9 @@ cd $CWD;
 # zsh
 ln -svf $CWD/.zshrc $HOME/.zshrc
 
+# powerlevel10k
+ln -svf $CWD/.p10k.zsh $HOME/.p10k.zsh
+
 # set proper variables by sourcing (to be safe)
 source $HOME/.zshrc
 
@@ -16,6 +19,9 @@ cd fonts
 ./install.sh
 cd ..
 rm -rf fonts
+
+# powerlevel10k theme
+git clone https://github.com/romkatv/powerlevel10k ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
 
 # zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
