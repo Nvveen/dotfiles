@@ -74,7 +74,7 @@ POWERLEVEL9K_MODE="awesome-patched"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vscode z npm ssh-agent zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git vscode z npm ssh-agent zsh-autosuggestions zsh-syntax-highlighting vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
