@@ -10,9 +10,6 @@ ln -svf $CWD/.zshrc $HOME/.zshrc
 # powerlevel10k
 ln -svf $CWD/.p10k.zsh $HOME/.p10k.zsh
 
-# set proper variables by sourcing (to be safe)
-source $HOME/.zshrc
-
 # powerline fonts
 git clone https://github.com/powerline/fonts.git --depth=1
 cd fonts
