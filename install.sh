@@ -7,6 +7,9 @@ cd $CWD;
 # zsh
 ln -svf $CWD/.zshrc $HOME/.zshrc
 
+# set proper variables by sourcing (to be safe)
+source $HOME/.zshrc
+
 # powerline fonts
 git clone https://github.com/powerline/fonts.git --depth=1
 cd fonts
