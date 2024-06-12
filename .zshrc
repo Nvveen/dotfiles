@@ -113,3 +113,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[[ -e $HOME/.zshrc_local ]] && source $HOME/.zshrc_local
+
+fpath=($HOME/.config/zsh/completions $fpath)
+autoload -U compinit && compinit
