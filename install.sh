@@ -5,6 +5,7 @@ CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $CWD;
 
 # zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 ln -svf $CWD/.zshrc $HOME/.zshrc
 
 # powerlevel10k
