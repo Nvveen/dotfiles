@@ -118,3 +118,25 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 
 fpath=($HOME/.config/zsh/completions $fpath)
 autoload -U compinit && compinit
+
+# bun completions
+[ -s "/home/node/.bun/_bun" ] && source "/home/node/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/home/node/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# npm
+export PATH=$PATH:$HOME/.local/share/npm/bin
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
