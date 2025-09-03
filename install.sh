@@ -11,4 +11,4 @@ ln -svf $CWD/.zshrc $HOME/.zshrc
 git submodule update --init --recursive
 
 # link plugins
-ln -svf $CWD/.oh-my-zsh/custom/plugins/* $HOME/.oh-my-zsh/custom/plugins/
+ln -svf $CWD/modules/.oh-my-zsh/custom/plugins/* $HOME/.oh-my-zsh/custom/plugins/
