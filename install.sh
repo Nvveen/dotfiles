@@ -10,29 +10,42 @@ git submodule update --init --recursive
 
 # Omarchy
 if [[ -d $HOME/.config/omarchy ]]; then
-    ENV="omarchy"
+  ENV="omarchy"
 fi
 
 # Other environments can be added here
 
 setup_omarchy() {
-    sudo yay -S --noconfirm zsh
+  # install packages
+  yay -S --noconfirm zsh
+  chsh -s /usr/bin/zsh
 
-    # oh-my-zsh
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    ln -svf $CWD/.zshrc $HOME/.zshrc
+  # Remove packages
+  declare -a WEBAPPS=(Basecamp ChatGPT Figma HEY Zoom)
+  for pkg in "${WEBAPPS[@]}"; do
+    rm -vf "$HOME/.local/share/applications/${pkg}.desktop"
+    rm -vf "$HOME/.local/share/applications/icons/${pkg}.png"
+  done
+  sudo pacman -Rns obs-studio obsidian xournalpp
 
-    # link plugins
-    ln -svf $CWD/modules/.oh-my-zsh/custom/plugins/* $HOME/.oh-my-zsh/custom/plugins/
+  # oh-my-zsh
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  ln -svf $CWD/zsh/zshrc $HOME/.zshrc
+
+  # link plugins
+  plugins_dir="$CWD/oh-my-zsh/custom/plugins"
+  ls $plugins_dir | while read -r line; do
+    ln -svf "$plugins_dir/$line" "$HOME/.oh-my-zsh/custom/plugins/$line"
+  done
 }
 
 # switch on env
 case $ENV in
 omarchy)
-    setup_omarchy
-    ;;
+  setup_omarchy
+  ;;
 *)
-    echo "Unknown environment: $ENV"
-    exit 1
-    ;;
+  echo "Unknown environment: $ENV"
+  exit 1
+  ;;
 esac
