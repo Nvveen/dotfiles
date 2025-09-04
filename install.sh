@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO nvim tokyo-night
+# TODO firefox
+
 # get directory of current script
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $CWD
@@ -26,7 +29,7 @@ setup_omarchy() {
     rm -vf "$HOME/.local/share/applications/${pkg}.desktop"
     rm -vf "$HOME/.local/share/applications/icons/${pkg}.png"
   done
-  sudo pacman -Rns obs-studio obsidian xournalpp
+  sudo pacman -Rns obs-studio obsidian xournalpp typora
 
   # oh-my-zsh
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
