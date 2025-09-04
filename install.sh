@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO hyprland bindings
+# TODO alacritty config
+
 # get directory of current script
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $CWD
@@ -46,6 +49,9 @@ setup_omarchy() {
   # nvim
   ln -svf $CWD/nvim/lua/plugins/disabled.lua $HOME/.config/nvim/lua/plugins/disabled.lua
   ln -svf $CWD/nvim/lua/plugins/cmp.lua $HOME/.config/nvim/lua/plugins/cmp.lua
+
+  # hyprland
+  ln -svf $CWD/hyprland/hyprland.conf $HOME/.config/hyprland/hyprland.conf
 
   # theming
   omarchy-theme-set osaka-jade
