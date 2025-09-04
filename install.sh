@@ -43,6 +43,10 @@ setup_omarchy() {
     ln -svf "$plugins_dir/$line" "$HOME/.oh-my-zsh/custom/plugins/$line"
   done
 
+  # nvim
+  ln -svf $CWD/nvim/lua/plugins/disabled.lua $HOME/.config/nvim/lua/plugins/disabled.lua
+  ln -svf $CWD/nvim/lua/plugins/cmp.lua $HOME/.config/nvim/lua/plugins/cmp.lua
+
   # theming
   omarchy-theme-set osaka-jade
 }
