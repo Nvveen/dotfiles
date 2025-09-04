@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO nvim tokyo-night
-# TODO firefox
-
 # get directory of current script
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $CWD
@@ -20,16 +17,16 @@ fi
 
 setup_omarchy() {
   # install packages
-  yay -S --noconfirm zsh
+  yay -S --noconfirm zsh firefox
   chsh -s /usr/bin/zsh
 
   # Remove packages
+  yay -Rns obs-studio obsidian xournalpp typora omarchy-chromium
   declare -a WEBAPPS=(Basecamp ChatGPT Figma HEY Zoom)
   for pkg in "${WEBAPPS[@]}"; do
     rm -vf "$HOME/.local/share/applications/${pkg}.desktop"
     rm -vf "$HOME/.local/share/applications/icons/${pkg}.png"
   done
-  sudo pacman -Rns obs-studio obsidian xournalpp typora
 
   # oh-my-zsh
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -46,6 +43,9 @@ setup_omarchy() {
   ls $plugins_dir | while read -r line; do
     ln -svf "$plugins_dir/$line" "$HOME/.oh-my-zsh/custom/plugins/$line"
   done
+
+  # theming
+  omarchy-theme-set osaka-jade
 }
 
 # switch on env
