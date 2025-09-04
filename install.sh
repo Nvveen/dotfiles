@@ -31,6 +31,12 @@ setup_omarchy() {
   # oh-my-zsh
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
   ln -svf $CWD/zsh/zshrc $HOME/.zshrc
+  ln -svf $CWD/zsh/zprofile $HOME/.zprofile
+  ln -svf $CWD/oh-my-zsh/aliases.sh $ZSH_CUSTOM/aliases.sh
+
+  # starship theme
+  mv -v $HOME/.config/starship.toml $HOME/.config/starship.toml_bak
+  starship preset tokyo-night -o $HOME/.config/starship.toml
 
   # link plugins
   plugins_dir="$CWD/oh-my-zsh/custom/plugins"
