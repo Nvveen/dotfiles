@@ -24,8 +24,7 @@ setup_omarchy() {
   yay -Rns obs-studio obsidian xournalpp typora omarchy-chromium
   declare -a WEBAPPS=(Basecamp ChatGPT Figma HEY Zoom)
   for pkg in "${WEBAPPS[@]}"; do
-    rm -vf "$HOME/.local/share/applications/${pkg}.desktop"
-    rm -vf "$HOME/.local/share/applications/icons/${pkg}.png"
+    omarchy-webapp-remove $pkg
   done
 
   # oh-my-zsh
