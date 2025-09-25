@@ -8,6 +8,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STOW_BACKUP="$DOTFILES/.stow_backup"
 CONFIGS="$DOTFILES/configs"
 
+OS_ENV=local
 detect_environment() {
     # Environment detection logic here
     # Omarchy
@@ -15,7 +16,21 @@ detect_environment() {
         OS_ENV="omarchy"
     fi
 }
-OS_ENV=$(detect_environment)  # Auto-detect environment
+
+install_oh_my_zsh() {
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        log "Installing oh-my-zsh..."
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    else
+        log "oh-my-zsh is already installed, skipping..."
+    fi
+}
+
+setup_local() {
+    echo "Setting up local environment"
+    install_oh_my_zsh
+    # Local setup logic here
+}
 
 setup_omarchy() {
     # install packages
@@ -29,19 +44,21 @@ setup_omarchy() {
         omarchy-webapp-remove $pkg
     done
 
-    # oh-my-zsh
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    install_oh_my_zsh
 }
 
 setup_os() {
     git submodule update --init --recursive
     # switch on env
-    case $ENV in
+    case $OS_ENV in
         omarchy)
             setup_omarchy
         ;;
+        local)
+            setup_local
+        ;;
         *)
-            echo "Unknown environment: $ENV"
+            echo "Unknown environment: $OS_ENV"
             exit 1
         ;;
     esac
@@ -53,7 +70,7 @@ setup_config() {
 
     # mirror repo
     local TIMESTAMP=$(date +"%Y-%m-%dT%H:%M:%S")
-    local STOW_BACKUP="$STOW_BACKUP/$TIMESTAMP"
+    local STOW_BACKUP_DIR="$STOW_BACKUP/$TIMESTAMP"
     local STOW_PKG=${CONFIGS//$DOTFILES\//}
     local EXISTING=$(cd $CONFIGS && find . -type f | cut -c3-)
 
@@ -62,7 +79,7 @@ setup_config() {
     for f in $EXISTING; do
         local ORIGINAL="$HOME/$f"
         local TARGET="$CONFIGS/$f"
-        local BACKUP_TARGET="$STOW_BACKUP/$f"
+        local BACKUP_TARGET="$STOW_BACKUP_DIR/$f"
 
         # stow --delete $CONFIGS
         if [[ -L "$ORIGINAL" ]]; then
@@ -80,15 +97,6 @@ setup_config() {
     # use stow to mirror the config directory
 }
 
-main() {
-    if [ "$ONLY_CONFIGS" == false ]; then
-        setup_os
-    else
-        echo "Only setting up config, skipping OS installations"
-    fi
-    setup_config
-}
-
 show_help() {
     cat << EOF
 Usage: $0 [OPTIONS] COMMAND [ARGS]
@@ -101,7 +109,7 @@ Options:
     -h, --help          Show this help message
     -v, --verbose       Enable verbose output
     --only-configs      Install only configuration files (install command only)
-    --env ENV           Override environment detection (local, docker, kubernetes, lambda)
+    --env <ENV>         Override environment detection (omarchy, local)
 
 Examples:
     $0 install
@@ -118,12 +126,13 @@ log() {
 }
 
 install_command() {
-    log "Environment: $OS_ENV"
-    if [ "$ONLY_CONFIGS" = false ]; then
+    detect_environment
+    echo "Environment detected: $OS_ENV"
+    if [ "$ONLY_CONFIGS" == false ]; then
         log "Full installation for $OS_ENV environment"
         setup_os
     else
-        log "Installing only configuration files for $OS_ENV environment"
+        echo "Only setting up config, skipping OS installations"
     fi
     setup_config
     echo "Installation complete"
@@ -150,12 +159,8 @@ main() {
                 ONLY_CONFIGS=true
                 shift
             ;;
-            -o|--output)
-                OUTPUT_FILE="$2"
-                shift 2
-            ;;
-            -i|--input)
-                INPUT_FILE="$2"
+            --env)
+                OS_ENV="$2"
                 shift 2
             ;;
             install|uninstall)

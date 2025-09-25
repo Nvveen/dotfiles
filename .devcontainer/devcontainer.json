@@ -1,4 +1,8 @@
 {
   "image": "archlinux",
-  "features": {}
+  "features": {},
+  "remoteUser": "node",
+  "containerUser": "node",
+  "postCreateCommand": "sudo groupadd -f wheel && sudo useradd -m -G wheel -s /bin/bash node || true && echo 'node ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/node",
+  "updateRemoteUserUID": true
 }

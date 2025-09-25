@@ -70,7 +70,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ssh-agent zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -102,9 +102,3 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-[[ -f $ZSH_CUSTOM/aliases.sh ]] && source $ZSH_CUSTOM/aliases.sh
-bindkey -v
-eval "$(starship init zsh)"
-eval "$(mise activate zsh)"
-
-[[ -f $HOME/.zprofile ]] && source $HOME/.zprofile
