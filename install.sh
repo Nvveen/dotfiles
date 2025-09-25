@@ -1,23 +1,13 @@
 #!/bin/bash
 
+# Default values
+VERBOSE=false
+ONLY_CONFIGS=false
+OS_ENV=$(detect_environment)  # Auto-detect environment
 # get directory of current script
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STOW_BACKUP="$DOTFILES/.stow_backup"
 CONFIGS="$DOTFILES/configs"
-
-ONLY_CONFIGS=false
-if [[ " $* " == *" --only-configs "* ]]; then
-  ONLY_CONFIGS=true
-fi
-
-# Determine environment
-
-# Omarchy
-if [[ -d $HOME/.config/omarchy ]]; then
-  ENV="omarchy"
-fi
-
-# Other environments can be added here
 
 setup_omarchy() {
   # install packages
@@ -91,4 +81,108 @@ main() {
   setup_config
 }
 
-main
+detect_environment() {
+    # Environment detection logic here
+  # Omarchy
+  if [[ -d $HOME/.config/omarchy ]]; then
+    OS_ENV="omarchy"
+  fi
+}
+
+show_help() {
+    cat << EOF
+Usage: $0 [OPTIONS] COMMAND [ARGS]
+
+Commands:
+    install     Install the application
+    uninstall   Uninstall the application
+
+Options:
+    -h, --help          Show this help message
+    -v, --verbose       Enable verbose output
+    --only-configs      Install only configuration files (install command only)
+    --env ENV           Override environment detection (local, docker, kubernetes, lambda)
+
+Examples:
+    $0 install
+    $0 install --only-configs
+    $0 uninstall --verbose
+    $0 install --env docker
+EOF
+}
+
+log() {
+    if [ "$VERBOSE" = true ]; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+    fi
+}
+
+install_command() {
+    log "Environment: $OS_ENV"
+    if [ "$ONLY_CONFIGS" = false ]; then
+        log "Full installation for $OS_ENV environment"
+        setup_os
+    else
+        log "Installing only configuration files for $OS_ENV environment"
+    fi
+    setup_config
+    echo "Installation complete"
+}
+
+uninstall_command() {
+    log "Starting uninstall"
+    # Uninstall logic here
+    echo "Uninstall complete"
+}
+
+main() {
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        -v|--verbose)
+            VERBOSE=true
+            shift
+            ;;
+        --only-configs)
+            ONLY_CONFIGS=true
+            shift
+            ;;
+        -o|--output)
+            OUTPUT_FILE="$2"
+            shift 2
+            ;;
+        -i|--input)
+            INPUT_FILE="$2"
+            shift 2
+            ;;
+        install|uninstall)
+            COMMAND="$1"
+            shift
+            break
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+# Execute command
+case "${COMMAND:-}" in
+    install)
+        install_command "$@"
+        ;;
+    uninstall)
+        uninstall_command "$@"
+        ;;
+    *)
+        echo "Error: Unknown command: $COMMAND"
+        show_help
+        exit 1
+        ;;
+esacain
+}
