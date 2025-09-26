@@ -70,7 +70,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting ssh-agent)
+plugins=(git vscode npm vi-mode zsh-autosuggestions zsh-syntax-highlighting ssh-agent)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -106,4 +106,3 @@ source $ZSH/oh-my-zsh.sh
 [[ -f $ZSH_CUSTOM/aliases.zsh ]] && source $ZSH_CUSTOM/aliases.sh
 bindkey -v
 eval "$(starship init zsh)"
-[[ command -v mise 1>/dev/null ]] && eval "$(mise activate zsh)"
