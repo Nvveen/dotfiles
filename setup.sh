@@ -114,7 +114,7 @@ Examples:
     $0 install
     $0 install --only-configs
     $0 uninstall --verbose
-    $0 install --env docker
+    $0 install --env omarchy,local
 EOF
 }
 
