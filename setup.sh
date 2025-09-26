@@ -48,7 +48,6 @@ setup_omarchy() {
 }
 
 setup_os() {
-    git submodule update --init --recursive
     # switch on env
     case $OS_ENV in
         omarchy)

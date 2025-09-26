@@ -42,7 +42,7 @@ main() {
     fi
   fi
 
-  git clone -b v2 git@github.com:Nvveen/dotfiles.git
+  git clone -b v2 --recurse-submodules git@github.com:Nvveen/dotfiles.git
 
 }
 
