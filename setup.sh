@@ -34,11 +34,11 @@ setup_local() {
 
 setup_omarchy() {
     # install packages
-    yay -S --noconfirm zsh firefox stow rsync
+    yay -Sy --noconfirm zsh firefox stow rsync
     chsh -s /usr/bin/zsh
 
     # Remove packages
-    yay -Rns obs-studio obsidian xournalpp typora omarchy-chromium
+    yay -Rns --noconfirm obs-studio obsidian xournalpp typora omarchy-chromium
     declare -a WEBAPPS=(Basecamp ChatGPT Figma HEY Zoom)
     for pkg in "${WEBAPPS[@]}"; do
         omarchy-webapp-remove $pkg
