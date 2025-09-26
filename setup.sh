@@ -45,7 +45,11 @@ setup_omarchy() {
     done
 
     install_oh_my_zsh
+
+    # theming
+    omarchy-theme-set osaka-jade >/dev/null 2>&1
 }
+
 
 setup_os() {
     # switch on env
@@ -64,9 +68,6 @@ setup_os() {
 }
 
 setup_config() {
-    # theming
-    omarchy-theme-set osaka-jade >/dev/null 2>&1
-
     # mirror repo
     local TIMESTAMP=$(date +"%Y-%m-%dT%H:%M:%S")
     local STOW_BACKUP_DIR="$STOW_BACKUP/$TIMESTAMP"
@@ -139,7 +140,7 @@ install_command() {
 
 uninstall_command() {
     log "Starting uninstall"
-    # Uninstall logic here
+   # Uninstall logic here
     echo "Uninstall complete"
 }
 
