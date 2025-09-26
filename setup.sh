@@ -15,6 +15,9 @@ detect_environment() {
     if [[ -d $HOME/.config/omarchy ]]; then
         OS_ENV="omarchy"
     fi
+    if [[ "$CODESPACES" == "true" ]]; then
+        OS_ENV="codespace"
+    fi
 }
 
 install_oh_my_zsh() {
@@ -26,10 +29,13 @@ install_oh_my_zsh() {
     fi
 }
 
+setup_codespace() {
+    # a lot of setup is done in the container dockerfile.
+    echo "Setting up codespace environment"
+}
+
 setup_local() {
     echo "Setting up local environment"
-    install_oh_my_zsh
-    # Local setup logic here
 }
 
 setup_omarchy() {
@@ -56,6 +62,9 @@ setup_os() {
     case $OS_ENV in
         omarchy)
             setup_omarchy
+        ;;
+        codespace)
+            setup_codespace
         ;;
         local)
             setup_local
@@ -115,7 +124,7 @@ Examples:
     $0 install
     $0 install --only-configs
     $0 uninstall --verbose
-    $0 install --env omarchy,local
+    $0 install --env omarchy,local,codespace
 EOF
 }
 

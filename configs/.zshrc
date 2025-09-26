@@ -106,4 +106,4 @@ source $ZSH/oh-my-zsh.sh
 [[ -f $ZSH_CUSTOM/aliases.zsh ]] && source $ZSH_CUSTOM/aliases.sh
 bindkey -v
 eval "$(starship init zsh)"
-eval "$(mise activate zsh)"
+[[ command -v mise 1>/dev/null ]] && eval "$(mise activate zsh)"
