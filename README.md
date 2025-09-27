@@ -30,11 +30,6 @@ curl -fsSL https://tinyurl.com/nealdotfiles | bash
 - Custom aliases and shell functions
 - Syntax highlighting and autosuggestions
 
-### Development Tools
-- **Neovim** configuration with custom plugins
-- **Git** configuration and aliases
-- **Hyprland** window manager settings (Linux)
-
 ## 🚀 Installation
 
 ### Method 1: One-liner (Recommended)

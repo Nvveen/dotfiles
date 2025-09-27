@@ -9,6 +9,12 @@ NO_UPDATE=false
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUPS="$DOTFILES/.backups"
 CONFIGS="$DOTFILES/configs"
+SCRIPTS="$DOTFILES/scripts"
+
+# Source environment-specific functions
+source "$SCRIPTS/codespace.sh"
+source "$SCRIPTS/local.sh"
+source "$SCRIPTS/omarchy.sh"
 
 OS_ENV=local
 detect_environment() {
@@ -31,33 +37,7 @@ install_oh_my_zsh() {
     fi
 }
 
-setup_codespace() {
-    # a lot of setup is done in the container dockerfile.
-    install_oh_my_zsh
-    echo "Setting up codespace environment"
-}
 
-setup_local() {
-    echo "Setting up local environment"
-}
-
-setup_omarchy() {
-    # install packages
-    yay -Sy --noconfirm zsh firefox stow rsync
-    chsh -s /usr/bin/zsh
-
-    # Remove packages
-    yay -Rns --noconfirm obs-studio obsidian xournalpp typora omarchy-chromium
-    declare -a WEBAPPS=(Basecamp ChatGPT Figma HEY Zoom)
-    for pkg in "${WEBAPPS[@]}"; do
-        omarchy-webapp-remove $pkg
-    done
-
-    install_oh_my_zsh
-
-    # theming
-    omarchy-theme-set osaka-jade >/dev/null 2>&1
-}
 
 
 setup_os() {
@@ -249,38 +229,6 @@ uninstall_oh_my_zsh() {
     else
         log "oh-my-zsh not found, skipping..."
     fi
-}
-
-uninstall_codespace() {
-    log "Uninstalling codespace environment setup"
-    uninstall_oh_my_zsh
-}
-
-uninstall_local() {
-    log "Uninstalling local environment setup"
-    # Local setup currently does nothing, so nothing to uninstall
-}
-
-uninstall_omarchy() {
-    log "Uninstalling omarchy environment setup"
-
-    # Restore removed packages (optional - user might not want these back)
-    log "Note: Previously removed packages (obs-studio, obsidian, etc.) are not automatically restored"
-
-    # Remove installed packages (be careful - these might be used by other applications)
-    log "Note: Installed packages (zsh, firefox, stow, rsync) are not automatically removed as they might be used by other applications"
-    log "If you want to remove them, run: yay -Rns zsh firefox stow rsync"
-
-    # Reset shell to default (bash)
-    if [[ "$SHELL" == "/usr/bin/zsh" ]]; then
-        log "Resetting shell to bash..."
-        chsh -s /bin/bash
-    fi
-
-    uninstall_oh_my_zsh
-
-    # Note about theme - omarchy themes are system-wide, user should manually reset if desired
-    log "Note: omarchy theme changes are not automatically reverted. Use omarchy-theme-set to change if desired"
 }
 
 uninstall_os() {
