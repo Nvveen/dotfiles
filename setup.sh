@@ -85,24 +85,25 @@ setup_config() {
     local EXISTING=$(cd $CONFIGS && find . -type f | cut -c3-)
 
     stow --verbose --target=$HOME --delete $STOW_PKG
-    # backup original files first
+    # backup original target files first (to prevent --adopt from overwriting our source)
     for f in $EXISTING; do
         local ORIGINAL="$HOME/$f"
         local TARGET="$CONFIGS/$f"
         local BACKUP_TARGET="$STOW_BACKUP_DIR/$f"
 
-        # stow --delete $CONFIGS
         if [[ -L "$ORIGINAL" ]]; then
             # remove any existing links
             echo "Resetting link to $TARGET"
             rm -f $ORIGINAL
-        else
+        elif [[ -f "$ORIGINAL" ]]; then
             echo "Backing up $ORIGINAL to $BACKUP_TARGET"
-            install -D "$TARGET" "$BACKUP_TARGET" >/dev/null 2>&1
+            install -D "$ORIGINAL" "$BACKUP_TARGET" >/dev/null 2>&1
+            # Remove the conflicting file so --adopt won't overwrite our source
+            rm -f "$ORIGINAL"
         fi
     done
 
-    stow --verbose --target=$HOME --adopt $STOW_PKG
+    stow --verbose --target=$HOME $STOW_PKG
 
     # use stow to mirror the config directory
 }
@@ -138,6 +139,8 @@ log() {
 install_command() {
     detect_environment
     echo "Environment detected: $OS_ENV"
+    # make sure submodules have been pulled in
+    git submodule update --init --recursive
     if [ "$ONLY_CONFIGS" == false ]; then
         log "Full installation for $OS_ENV environment"
         setup_os
