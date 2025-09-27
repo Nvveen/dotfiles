@@ -4,6 +4,7 @@
 VERBOSE=false
 ONLY_CONFIGS=false
 RESTORE_BACKUP=""
+NO_UPDATE=false
 # get directory of current script
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STOW_BACKUP="$DOTFILES/.stow_backup"
@@ -120,6 +121,7 @@ Commands:
 Global Options:
     -h, --help          Show this help message
     -v, --verbose       Enable verbose output
+    --no-update         Skip checking for updates from GitHub
 
 Command-Specific Options:
 
@@ -140,6 +142,7 @@ Examples:
     $0 uninstall --verbose
     $0 uninstall --restore 2023-10-15T14:30:22
     $0 list-backups
+    $0 --no-update install
 EOF
 }
 
@@ -147,6 +150,83 @@ log() {
     if [ "$VERBOSE" = true ]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
     fi
+}
+
+check_for_updates() {
+    log "Checking for updates from GitHub repository..."
+    
+    # Check if we're in a git repository
+    if [[ ! -d "$DOTFILES/.git" ]]; then
+        log "Not in a git repository, skipping update check"
+        return 0
+    fi
+    
+    # Check if we have internet connectivity
+    if ! curl -s --max-time 5 https://github.com >/dev/null 2>&1; then
+        log "No internet connection, skipping update check"
+        return 0
+    fi
+    
+    # Fetch latest changes from remote
+    log "Fetching latest changes from remote..."
+    cd "$DOTFILES" || {
+        echo "Error: Could not change to dotfiles directory"
+        return 1
+    }
+    
+    # Get current commit hash
+    local current_commit=$(git rev-parse HEAD)
+    
+    # Fetch from remote (don't merge yet)
+    if ! git fetch origin 2>/dev/null; then
+        log "Failed to fetch from remote, continuing with current version"
+        return 0
+    fi
+    
+    # Get remote commit hash for current branch
+    local current_branch=$(git branch --show-current)
+    local remote_commit=$(git rev-parse "origin/$current_branch" 2>/dev/null)
+    
+    # If we can't get remote commit, skip update
+    if [[ -z "$remote_commit" ]]; then
+        log "Could not determine remote commit, skipping update"
+        return 0
+    fi
+    
+    # Check if we're behind
+    if [[ "$current_commit" != "$remote_commit" ]]; then
+        echo "Updates found in GitHub repository!"
+        echo "Current commit: ${current_commit:0:8}"
+        echo "Remote commit:  ${remote_commit:0:8}"
+        echo
+        
+        # Check if there are local changes
+        if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "Warning: You have local changes that haven't been committed."
+            echo "The update will be skipped to avoid conflicts."
+            echo "Please commit or stash your changes and run the script again."
+            return 1
+        fi
+        
+        echo "Pulling updates and restarting script..."
+        
+        # Pull the updates
+        if git pull origin "$current_branch"; then
+            echo "Updates applied successfully. Restarting script..."
+            echo "----------------------------------------"
+            
+            # Re-execute the script with the same arguments
+            exec "$0" "$@"
+        else
+            echo "Error: Failed to pull updates"
+            echo "Continuing with current version..."
+            return 1
+        fi
+    else
+        log "Script is up to date"
+    fi
+    
+    return 0
 }
 
 install_command() {
@@ -355,6 +435,10 @@ parse_global_options() {
                 VERBOSE=true
                 shift
             ;;
+            --no-update)
+                NO_UPDATE=true
+                shift
+            ;;
             *)
                 if [[ -n "$1" ]]; then
                     echo "Error: Unknown global option: $1"
@@ -424,6 +508,19 @@ main() {
     if [[ "$1" == "-h" || "$1" == "--help" ]]; then
         show_help
         exit 0
+    fi
+
+    # Check for --no-update flag first (before calling check_for_updates)
+    for arg in "$@"; do
+        if [[ "$arg" == "--no-update" ]]; then
+            NO_UPDATE=true
+            break
+        fi
+    done
+
+    # Check for updates before doing anything else (unless --no-update is specified)
+    if [[ "$NO_UPDATE" != true ]]; then
+        check_for_updates "$@"
     fi
 
     # Find command first, then parse options
