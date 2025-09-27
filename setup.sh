@@ -154,52 +154,42 @@ log() {
 
 check_for_updates() {
     log "Checking for updates from GitHub repository..."
-    
+
     # Check if we're in a git repository
     if [[ ! -d "$DOTFILES/.git" ]]; then
         log "Not in a git repository, skipping update check"
         return 0
     fi
-    
+
     # Check if we have internet connectivity
     if ! curl -s --max-time 5 https://github.com >/dev/null 2>&1; then
         log "No internet connection, skipping update check"
         return 0
     fi
-    
+
     # Fetch latest changes from remote
     log "Fetching latest changes from remote..."
     cd "$DOTFILES" || {
         echo "Error: Could not change to dotfiles directory"
         return 1
     }
-    
-    # Get current commit hash
-    local current_commit=$(git rev-parse HEAD)
-    
+
+    # Get current branch
+    local current_branch=$(git branch --show-current)
+
     # Fetch from remote (don't merge yet)
     if ! git fetch origin 2>/dev/null; then
         log "Failed to fetch from remote, continuing with current version"
         return 0
     fi
-    
-    # Get remote commit hash for current branch
-    local current_branch=$(git branch --show-current)
-    local remote_commit=$(git rev-parse "origin/$current_branch" 2>/dev/null)
-    
-    # If we can't get remote commit, skip update
-    if [[ -z "$remote_commit" ]]; then
-        log "Could not determine remote commit, skipping update"
-        return 0
-    fi
-    
-    # Check if we're behind
-    if [[ "$current_commit" != "$remote_commit" ]]; then
+
+    # Check if we're behind the remote using git status
+    local status_output=$(git status --porcelain=v1 --branch)
+    if echo "$status_output" | grep -q "\[behind"; then
         echo "Updates found in GitHub repository!"
-        echo "Current commit: ${current_commit:0:8}"
-        echo "Remote commit:  ${remote_commit:0:8}"
+        echo "Your branch is behind the remote branch."
         echo
-        
+
         # Check if there are local changes
         if ! git diff --quiet || ! git diff --cached --quiet; then
             echo "Warning: You have local changes that haven't been committed."
@@ -207,14 +197,14 @@ check_for_updates() {
             echo "Please commit or stash your changes and run the script again."
             return 1
         fi
-        
+
         echo "Pulling updates and restarting script..."
-        
+
         # Pull the updates
         if git pull origin "$current_branch"; then
             echo "Updates applied successfully. Restarting script..."
             echo "----------------------------------------"
-            
+
             # Re-execute the script with the same arguments
             exec "$0" "$@"
         else
@@ -225,7 +215,7 @@ check_for_updates() {
     else
         log "Script is up to date"
     fi
-    
+
     return 0
 }
 
