@@ -7,7 +7,7 @@ RESTORE_BACKUP=""
 NO_UPDATE=false
 # get directory of current script
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STOW_BACKUP="$DOTFILES/.stow_backup"
+BACKUPS="$DOTFILES/.backups"
 CONFIGS="$DOTFILES/configs"
 
 OS_ENV=local
@@ -82,7 +82,7 @@ setup_os() {
 setup_config() {
     # mirror repo
     local TIMESTAMP=$(date +"%Y-%m-%dT%H:%M:%S")
-    local STOW_BACKUP_DIR="$STOW_BACKUP/$TIMESTAMP"
+    local BACKUP_DIR="$BACKUPS/$TIMESTAMP"
     local STOW_PKG=${CONFIGS//$DOTFILES\//}
     local EXISTING=$(cd $CONFIGS && find . -type f | cut -c3-)
 
@@ -91,7 +91,7 @@ setup_config() {
     for f in $EXISTING; do
         local ORIGINAL="$HOME/$f"
         local TARGET="$CONFIGS/$f"
-        local BACKUP_TARGET="$STOW_BACKUP_DIR/$f"
+        local BACKUP_TARGET="$BACKUP_DIR/$f"
 
         if [[ -L "$ORIGINAL" ]]; then
             # remove any existing links
@@ -318,27 +318,27 @@ uninstall_config() {
     }
 
     # Handle backup restoration
-    if [[ -d "$STOW_BACKUP" ]]; then
+    if [[ -d "$BACKUPS" ]]; then
         local BACKUP_TO_RESTORE=""
 
         if [[ -n "$RESTORE_BACKUP" ]]; then
             # User specified a specific backup
-            if [[ -d "$STOW_BACKUP/$RESTORE_BACKUP" ]]; then
+            if [[ -d "$BACKUPS/$RESTORE_BACKUP" ]]; then
                 BACKUP_TO_RESTORE="$RESTORE_BACKUP"
                 log "Using specified backup: $RESTORE_BACKUP"
             else
                 log "Error: Specified backup '$RESTORE_BACKUP' not found"
                 log "Available backups:"
-                ls -1 "$STOW_BACKUP" 2>/dev/null || echo "  (none)"
+                ls -1 "$BACKUPS" 2>/dev/null || echo "  (none)"
                 exit 1
             fi
         else
             # Find and offer the most recent backup
-            local LATEST_BACKUP=$(ls -1t "$STOW_BACKUP" 2>/dev/null | head -1)
-            if [[ -n "$LATEST_BACKUP" ]] && [[ -d "$STOW_BACKUP/$LATEST_BACKUP" ]]; then
+            local LATEST_BACKUP=$(ls -1t "$BACKUPS" 2>/dev/null | head -1)
+            if [[ -n "$LATEST_BACKUP" ]] && [[ -d "$BACKUPS/$LATEST_BACKUP" ]]; then
                 log "Found backup from $LATEST_BACKUP"
                 echo "Available backups:"
-                ls -1t "$STOW_BACKUP" 2>/dev/null | head -5
+                ls -1t "$BACKUPS" 2>/dev/null | head -5
                 echo
                 read -p "Do you want to restore backed up files from $LATEST_BACKUP? (y/N): " -n 1 -r
                 echo
@@ -353,7 +353,7 @@ uninstall_config() {
         # Restore the selected backup
         if [[ -n "$BACKUP_TO_RESTORE" ]]; then
             log "Restoring backed up files from $BACKUP_TO_RESTORE..."
-            cp -r "$STOW_BACKUP/$BACKUP_TO_RESTORE"/. "$HOME/"
+            cp -r "$BACKUPS/$BACKUP_TO_RESTORE"/. "$HOME/"
             log "Backup files restored"
         else
             log "Skipping backup restoration"
@@ -401,20 +401,20 @@ uninstall_command() {
     echo "Notes:"
     echo "- Some system packages were not automatically removed for safety"
     echo "- Shell may have been reset to bash (restart terminal to take effect)"
-    echo "- Check the backup directory if you need to recover any files: $STOW_BACKUP"
+    echo "- Check the backup directory if you need to recover any files: $BACKUPS"
 }
 
 list_backups_command() {
-    if [[ -d "$STOW_BACKUP" ]]; then
+    if [[ -d "$BACKUPS" ]]; then
         echo "Available backups (newest first):"
-        ls -1t "$STOW_BACKUP" 2>/dev/null | while read backup; do
+        ls -1t "$BACKUPS" 2>/dev/null | while read backup; do
             echo "  $backup"
             # Show some info about what's in the backup
-            local file_count=$(find "$STOW_BACKUP/$backup" -type f 2>/dev/null | wc -l)
+            local file_count=$(find "$BACKUPS/$backup" -type f 2>/dev/null | wc -l)
             echo "    ($file_count files backed up)"
         done
     else
-        echo "No backup directory found at: $STOW_BACKUP"
+        echo "No backup directory found at: $BACKUPS"
     fi
 }
 
