@@ -29,7 +29,7 @@ detect_environment() {
 }
 
 install_oh_my_zsh() {
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    if [[ ! -f "$HOME/.oh-my-zsh/oh-my-sh.sh" ]]; then
         log "Installing oh-my-zsh..."
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --skip-chsh
     else
