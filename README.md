@@ -52,9 +52,6 @@ cd ~/.dotfiles
 # Install only configuration files (skip OS-specific setup)
 ./setup.sh install --only-configs
 
-# Install with verbose output
-./setup.sh --verbose install
-
 # Install for specific environment
 ./setup.sh install --env omarchy
 ```
@@ -63,7 +60,6 @@ cd ~/.dotfiles
 
 #### Global Options
 - `-h, --help` - Show help message
-- `-v, --verbose` - Enable verbose output
 
 #### Install Options
 - `--only-configs` - Install only configuration files
@@ -115,9 +111,6 @@ configs/
 ```bash
 # First-time setup
 curl -fsSL https://tinyurl.com/nealdotfiles | bash
-
-# Update existing installation
-./setup.sh install
 
 # Install only configs (skip system packages)
 ./setup.sh install --only-configs

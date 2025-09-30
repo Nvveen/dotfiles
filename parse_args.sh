@@ -11,7 +11,6 @@ Commands:
 
 Global Options:
     -h, --help          Show this help message
-    -v, --verbose       Enable verbose output
 
 Command-Specific Options:
 
@@ -29,10 +28,6 @@ EOF
 parse_global_options() {
     while [[ $# -gt 0 ]]; do
         case $1 in
-            -v|--verbose)
-                VERBOSE=true
-                shift
-            ;;
             *)
                 if [[ -n "$1" ]]; then
                     echo "Error: Unknown global option: $1"
@@ -70,17 +65,13 @@ parse_install_options() {
 }
 
 parse_and_separate_args() {
-    # Handle help first
     if [[ "$1" == "-h" || "$1" == "--help" ]]; then
         show_help
         exit 0
     fi
-
-    # Find command first, then separate global and command args
     local args=("$@")
     local command_found=false
     local in_command=false
-
     GLOBAL_ARGS=()
     COMMAND_ARGS=()
     COMMAND=""
@@ -100,13 +91,10 @@ parse_and_separate_args() {
         fi
     done
 
-    # If no command found
     if [[ "$command_found" == false ]]; then
         echo "Error: No command specified"
         show_help
         exit 1
     fi
-
-    # Parse global options
     parse_global_options "${GLOBAL_ARGS[@]}"
 }

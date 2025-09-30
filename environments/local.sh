@@ -3,7 +3,7 @@
 # Local environment setup and teardown functions
 
 setup_local() {
-    echo "Setting up local environment"
+    log "Setting up local environment"
     install_oh_my_zsh
 }
 

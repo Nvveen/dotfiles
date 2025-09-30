@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Default values
-VERBOSE=false
 ONLY_CONFIGS=false
 # get directory of current script
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -37,9 +36,6 @@ install_oh_my_zsh() {
     fi
 }
 
-
-
-
 setup_os() {
     # switch on env
     case $OS_ENV in
@@ -71,10 +67,10 @@ setup_config() {
 
         if [[ -L "$ORIGINAL" ]]; then
             # remove any existing links
-            echo "Resetting link to $TARGET"
+            log "Resetting link to $TARGET"
             rm -f $ORIGINAL
         elif [[ -f "$ORIGINAL" ]]; then
-            echo "Removing conflicting file: $ORIGINAL"
+            log "Removing conflicting file: $ORIGINAL"
             # Remove the conflicting file so stow can create the symlink
             rm -f "$ORIGINAL"
         fi
@@ -84,44 +80,26 @@ setup_config() {
     stow --verbose --target=$HOME $STOW_PKG
 }
 
-
-
 log() {
-    if [ "$VERBOSE" = true ]; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
-    fi
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
-
-
 
 install_command() {
     detect_environment
-    echo "Environment detected: $OS_ENV"
-    # make sure submodules have been pulled in
+    log "Environment detected: $OS_ENV"
     git submodule update --init --recursive
     if [ "$ONLY_CONFIGS" == false ]; then
         log "Full installation for $OS_ENV environment"
         setup_os
     else
-        echo "Only setting up config, skipping OS installations"
+        log "Only setting up config, skipping OS installations"
     fi
     setup_config
-    echo "Installation complete"
+    log "Installation complete"
 }
 
-
-
-
-
-
-
-
-
 main() {
-    # Parse and separate arguments
     parse_and_separate_args "$@"
-
-    # Handle command-specific options and execute command
     case "$COMMAND" in
         install)
             parse_install_options "${COMMAND_ARGS[@]}"
