@@ -17,9 +17,6 @@ curl -fsSL https://tinyurl.com/nealdotfiles | bash
   - 🐳 GitHub Codespaces
   - 🔧 Omarchy Linux setups
 - **Smart Configuration Management**: Uses GNU Stow for clean symlink management
-- **Automatic Backups**: Creates timestamped backups of existing configurations
-- **Update Checking**: Automatically checks for and applies updates from GitHub
-- **Safe Uninstall**: Complete removal with backup restoration options
 - **Command-Specific Options**: Enforced argument validation for different operations
 
 ## 📦 What's Included
@@ -60,22 +57,6 @@ cd ~/.dotfiles
 
 # Install for specific environment
 ./setup.sh install --env omarchy
-
-# Skip update checking
-./setup.sh --no-update install
-```
-
-### Uninstall
-
-```bash
-# Uninstall with automatic backup restoration
-./setup.sh uninstall
-
-# Uninstall and restore specific backup
-./setup.sh uninstall --restore 2023-10-15T14:30:22
-
-# List available backups
-./setup.sh list-backups
 ```
 
 ### Available Options
@@ -83,14 +64,10 @@ cd ~/.dotfiles
 #### Global Options
 - `-h, --help` - Show help message
 - `-v, --verbose` - Enable verbose output
-- `--no-update` - Skip checking for updates from GitHub
 
 #### Install Options
 - `--only-configs` - Install only configuration files
 - `--env <ENV>` - Override environment detection (omarchy, local, codespace)
-
-#### Uninstall Options
-- `--restore <DATE>` - Restore specific backup during uninstall
 
 ## 🏗️ Environment-Specific Setup
 
@@ -124,26 +101,7 @@ configs/
 └── .zshrc              # Zsh configuration
 ```
 
-## 💾 Backup System
 
-The setup automatically creates timestamped backups in `.backups/` before making changes:
-
-```
-.backups/
-├── 2025-09-27T14:30:22/    # Backup from install
-├── 2025-09-27T15:45:10/    # Backup from update
-└── ...
-```
-
-Use `./setup.sh list-backups` to see all available backups.
-
-## 🔄 Updates
-
-The setup script automatically checks for updates from GitHub before each run. You can:
-
-- **Skip update checking**: Use `--no-update` flag
-- **Manual update**: Simply run any command; updates are applied automatically
-- **View changes**: Check commit history on GitHub
 
 ## 🛠️ Customization
 
@@ -164,15 +122,6 @@ curl -fsSL https://tinyurl.com/nealdotfiles | bash
 # Install only configs (skip system packages)
 ./setup.sh install --only-configs
 
-# Uninstall everything
-./setup.sh uninstall
-
-# Restore from specific backup
-./setup.sh uninstall --restore 2025-09-27T14:30:22
-
-# List all backups
-./setup.sh list-backups
-
 # Force specific environment
 ./setup.sh install --env local
 ```
@@ -181,11 +130,9 @@ curl -fsSL https://tinyurl.com/nealdotfiles | bash
 
 ### Common Issues
 
-**Update loops**: If you see infinite update loops, you may have local uncommitted changes. Either commit them or use `--no-update`.
-
 **Permission errors**: Ensure you have write access to your home directory and the ability to install packages (if doing full install).
 
-**Stow conflicts**: Existing dotfiles may conflict. The script will backup originals, but you may need to resolve conflicts manually.
+**Stow conflicts**: Existing dotfiles may conflict. The script will remove conflicting files, so make sure to backup any important configurations manually if needed.
 
 ### Getting Help
 
