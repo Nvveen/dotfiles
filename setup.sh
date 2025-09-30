@@ -94,6 +94,7 @@ install_command() {
     else
         log "Only setting up config, skipping OS installations"
     fi
+    setup_oh_my_zsh
     setup_config
     log "Installation complete"
 }

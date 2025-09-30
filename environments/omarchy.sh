@@ -14,8 +14,6 @@ setup_omarchy() {
         omarchy-webapp-remove $pkg
     done
 
-    install_oh_my_zsh
-
     # theming
     omarchy-theme-set osaka-jade >/dev/null 2>&1
 }
