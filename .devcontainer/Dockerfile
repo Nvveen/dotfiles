@@ -18,5 +18,3 @@ USER vscode
 
 RUN touch /home/vscode/.zshrc
 RUN mkdir -p /home/vscode/.ssh/
-
-WORKDIR /workspaces/dotfiles
