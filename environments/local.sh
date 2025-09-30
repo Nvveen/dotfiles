@@ -7,7 +7,3 @@ setup_local() {
     install_oh_my_zsh
 }
 
-uninstall_local() {
-    log "Uninstalling local environment setup"
-    # Local setup currently does nothing, so nothing to uninstall
-}

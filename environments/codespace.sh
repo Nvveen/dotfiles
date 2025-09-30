@@ -8,7 +8,3 @@ setup_codespace() {
     log "Setting up codespace environment"
 }
 
-uninstall_codespace() {
-    log "Uninstalling codespace environment setup"
-    uninstall_oh_my_zsh
-}
