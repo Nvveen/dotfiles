@@ -28,12 +28,9 @@ detect_environment() {
 }
 
 install_oh_my_zsh() {
-    if [[ ! -f "$HOME/.oh-my-zsh/oh-my-sh.sh" ]]; then
-        log "Installing oh-my-zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --skip-chsh
-    else
-        log "oh-my-zsh is already installed, skipping..."
-    fi
+    rm -rf ~/.oh-my-zsh
+    log "Installing oh-my-zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --skip-chsh
 }
 
 setup_os() {
@@ -94,7 +91,7 @@ install_command() {
     else
         log "Only setting up config, skipping OS installations"
     fi
-    setup_oh_my_zsh
+    install_oh_my_zsh
     setup_config
     log "Installation complete"
 }
