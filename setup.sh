@@ -30,6 +30,7 @@ install_oh_my_zsh() {
     rm -rf ~/.oh-my-zsh
     log "Installing oh-my-zsh..."
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --skip-chsh
+    rm -f ~/.zshrc  # Remove the default .zshrc created by oh-my-zsh
 }
 
 setup_os() {
@@ -65,29 +66,37 @@ setup_os() {
 }
 
 setup_config() {
-    local SHARED_PKG="configs/shared"
-    local ENV_CONFIG_PKG="environments/$OS_ENV/config"
+    local SHARED_DIR="$DOTFILES/environments/shared"
+    local ENV_CONFIG_DIR="$DOTFILES/environments/$OS_ENV"
 
     # Clean up any existing stowed configs first
-    if [[ -d "$DOTFILES/$SHARED_PKG" ]]; then
-        stow --verbose --target=$HOME --delete $SHARED_PKG 2>/dev/null || true
+    if [[ -d "$SHARED_DIR/config" ]]; then
+        cd "$SHARED_DIR"
+        stow --verbose --target=$HOME --delete config 2>/dev/null || true
+        cd "$DOTFILES"
     fi
-    if [[ -d "$DOTFILES/$ENV_CONFIG_PKG" ]]; then
-        stow --verbose --target=$HOME --delete $ENV_CONFIG_PKG 2>/dev/null || true
+    if [[ -d "$ENV_CONFIG_DIR/config" ]]; then
+        cd "$ENV_CONFIG_DIR"
+        stow --verbose --target=$HOME --delete config 2>/dev/null || true
+        cd "$DOTFILES"
     fi
 
     # First, stow shared configs as the base
-    if [[ -d "$DOTFILES/$SHARED_PKG" ]]; then
+    if [[ -d "$SHARED_DIR/config" ]]; then
         log "Installing shared configs..."
-        stow --verbose --target=$HOME --restow $SHARED_PKG
+        cd "$SHARED_DIR"
+        stow --verbose --target=$HOME --restow config
+        cd "$DOTFILES"
     else
-        log "Warning: No shared configs found at $DOTFILES/$SHARED_PKG"
+        log "Warning: No shared configs found at $SHARED_DIR/config"
     fi
 
     # Then, stow environment-specific configs (overrides shared symlinks)
-    if [[ -d "$DOTFILES/$ENV_CONFIG_PKG" ]]; then
+    if [[ -d "$ENV_CONFIG_DIR/config" ]]; then
         log "Installing $OS_ENV config overrides..."
-        stow --verbose --target=$HOME --restow $ENV_CONFIG_PKG
+        cd "$ENV_CONFIG_DIR"
+        stow --verbose --target=$HOME --restow config
+        cd "$DOTFILES"
     else
         log "No $OS_ENV-specific configs found, using shared only"
     fi
