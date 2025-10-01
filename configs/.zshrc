@@ -72,6 +72,8 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git vscode npm vi-mode zsh-autosuggestions zsh-syntax-highlighting ssh-agent)
 
+zstyle :omz:plugins:ssh-agent agent-forwarding yes
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
