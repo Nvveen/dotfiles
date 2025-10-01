@@ -1,18 +1,4 @@
 {
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "remoteUser": "vscode",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "foxundermoon.shell-format"
-      ],
-      "settings": {
-        "dotfiles.repository": "",
-        "terminal.integrated.defaultProfile.linux": "zsh"
-      }
-    }
-  },
-  "postCreateCommand": "cd /workspaces/dotfiles && bash setup.sh install --only-configs"
+  "image": "ghcr.io/nvveen/nealcontainer",
+  "postCreateCommand": "cd /workspaces/dotfiles && bash setup.sh install"
 }
