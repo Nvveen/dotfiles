@@ -11,9 +11,8 @@ ENVIRONMENTS="$DOTFILES/environments"
 source "$DOTFILES/parse_args.sh"
 
 # Source environment-specific functions
-source "$ENVIRONMENTS/codespace.sh"
-source "$ENVIRONMENTS/local.sh"
-source "$ENVIRONMENTS/omarchy.sh"
+# Note: These will be sourced dynamically based on detected environment
+# to support the new environments/${ENV}/setup.sh structure
 
 OS_ENV=local
 detect_environment() {
@@ -34,47 +33,64 @@ install_oh_my_zsh() {
 }
 
 setup_os() {
-    # switch on env
-    case $OS_ENV in
-        omarchy)
-            setup_omarchy
-        ;;
-        codespace)
-            setup_codespace
-        ;;
-        local)
-            setup_local
-        ;;
-        *)
-            echo "Unknown environment: $OS_ENV"
-            exit 1
-        ;;
-    esac
+    local ENV_SETUP_SCRIPT="$ENVIRONMENTS/$OS_ENV/setup.sh"
+
+    if [[ -f "$ENV_SETUP_SCRIPT" ]]; then
+        log "Sourcing environment setup script: $ENV_SETUP_SCRIPT"
+        source "$ENV_SETUP_SCRIPT"
+
+        # Call the environment-specific setup function
+        case $OS_ENV in
+            omarchy)
+                setup_omarchy
+            ;;
+            codespace)
+                setup_codespace
+            ;;
+            local)
+                setup_local
+            ;;
+            nealhost)
+                setup_nealhost
+            ;;
+            *)
+                echo "Unknown environment: $OS_ENV"
+                exit 1
+            ;;
+        esac
+    else
+        echo "Error: Environment setup script not found: $ENV_SETUP_SCRIPT"
+        exit 1
+    fi
 }
 
 setup_config() {
-    local STOW_PKG=${CONFIGS//$DOTFILES\//}
-    local EXISTING=$(cd $CONFIGS && find . -type f | cut -c3-)
+    local SHARED_PKG="configs/shared"
+    local ENV_CONFIG_PKG="environments/$OS_ENV/config"
 
-    stow --verbose --target=$HOME --delete $STOW_PKG
-    # remove any existing conflicting files or links
-    for f in $EXISTING; do
-        local ORIGINAL="$HOME/$f"
-        local TARGET="$CONFIGS/$f"
+    # Clean up any existing stowed configs first
+    if [[ -d "$DOTFILES/$SHARED_PKG" ]]; then
+        stow --verbose --target=$HOME --delete $SHARED_PKG 2>/dev/null || true
+    fi
+    if [[ -d "$DOTFILES/$ENV_CONFIG_PKG" ]]; then
+        stow --verbose --target=$HOME --delete $ENV_CONFIG_PKG 2>/dev/null || true
+    fi
 
-        if [[ -L "$ORIGINAL" ]]; then
-            # remove any existing links
-            log "Resetting link to $TARGET"
-            rm -f $ORIGINAL
-        elif [[ -f "$ORIGINAL" ]]; then
-            log "Removing conflicting file: $ORIGINAL"
-            # Remove the conflicting file so stow can create the symlink
-            rm -f "$ORIGINAL"
-        fi
-    done
+    # First, stow shared configs as the base
+    if [[ -d "$DOTFILES/$SHARED_PKG" ]]; then
+        log "Installing shared configs..."
+        stow --verbose --target=$HOME --restow $SHARED_PKG
+    else
+        log "Warning: No shared configs found at $DOTFILES/$SHARED_PKG"
+    fi
 
-    # use stow to mirror the config directory
-    stow --verbose --target=$HOME $STOW_PKG
+    # Then, stow environment-specific configs (overrides shared symlinks)
+    if [[ -d "$DOTFILES/$ENV_CONFIG_PKG" ]]; then
+        log "Installing $OS_ENV config overrides..."
+        stow --verbose --target=$HOME --restow $ENV_CONFIG_PKG
+    else
+        log "No $OS_ENV-specific configs found, using shared only"
+    fi
 }
 
 log() {

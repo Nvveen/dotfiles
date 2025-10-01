@@ -1,6 +1,6 @@
-[submodule "configs/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
-	path = configs/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+[submodule "environments/shared/config/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+	path = environments/shared/config/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting
-[submodule "configs/.oh-my-zsh/custom/plugins/zsh-autosuggestions"]
-	path = configs/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+[submodule "environments/shared/config/.oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+	path = environments/shared/config/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
