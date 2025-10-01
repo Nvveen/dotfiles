@@ -16,7 +16,7 @@ main() {
     exit 1
   fi
 
-  git clone -b v2 --recurse-submodules git@github.com:Nvveen/dotfiles.git
+  git clone -b v2 --recurse-submodules https://github.com/Nvveen/dotfiles
 
 }
 
