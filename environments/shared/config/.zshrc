@@ -105,6 +105,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[[ -f $ZSH_CUSTOM/aliases.zsh ]] && source $ZSH_CUSTOM/aliases.sh
+[[ -f $ZSH_CUSTOM/aliases.sh ]] && source $ZSH_CUSTOM/aliases.sh
 bindkey -v
 eval "$(starship init zsh)"
