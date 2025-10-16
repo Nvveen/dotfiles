@@ -16,13 +16,14 @@ source "$DOTFILES/parse_args.sh"
 
 OS_ENV=local
 detect_environment() {
-    # Environment detection logic here
-    # Omarchy
     if [[ -d $HOME/.config/omarchy ]]; then
         OS_ENV="omarchy"
     fi
     if [[ "$CODESPACES" == "true" ]]; then
         OS_ENV="codespace"
+    fi
+    if [[ "$NEALARCH" == "true" ]]; then
+        OS_ENV="nealarch"
     fi
 }
 

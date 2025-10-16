@@ -1,8 +1,7 @@
 #!/bin/bash
 
-setup_nealhost() {
+setup_nealarch() {
     # install packages
-    PACKAGES=(stow)
-    paru -Sy --noconfirm $PACKAGES
+    echo "nealarch is already setup, doing nothing"
 }
 
