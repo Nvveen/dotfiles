@@ -1,0 +1,14 @@
+[user]
+	email = nealvanveen@gmail.com
+	name = Neal van Veen
+[pull]
+    rebase = false
+[init]
+	defaultBranch = main
+[diff]
+    guitool = vscode
+	colorMoved = zebra
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[fetch]
+	prune = true
