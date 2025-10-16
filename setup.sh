@@ -51,8 +51,8 @@ setup_os() {
             local)
                 setup_local
             ;;
-            nealhost)
-                setup_nealhost
+            nealarch)
+                setup_nealarch
             ;;
             *)
                 echo "Unknown environment: $OS_ENV"
