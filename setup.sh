@@ -85,7 +85,8 @@ setup_config() {
     if [[ -d "$SHARED_DIR/config" ]]; then
         log "Installing shared configs..."
         cd "$SHARED_DIR"
-        stow --verbose --target=$HOME --restow config
+        stow --verbose --target=$HOME --restow --adopt config
+        git restore .
         cd "$DOTFILES"
     else
         log "Warning: No shared configs found at $SHARED_DIR/config"
@@ -95,7 +96,8 @@ setup_config() {
     if [[ -d "$ENV_CONFIG_DIR/config" ]]; then
         log "Installing $OS_ENV config overrides..."
         cd "$ENV_CONFIG_DIR"
-        stow --verbose --target=$HOME --restow config
+        stow --verbose --target=$HOME --restow --adopt config
+        git restore .
         cd "$DOTFILES"
     else
         log "No $OS_ENV-specific configs found, using shared only"
