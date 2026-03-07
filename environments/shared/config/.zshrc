@@ -108,3 +108,5 @@ source $ZSH/oh-my-zsh.sh
 [[ -f $ZSH_CUSTOM/aliases.sh ]] && source $ZSH_CUSTOM/aliases.sh
 bindkey -v
 eval "$(starship init zsh)"
+
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
