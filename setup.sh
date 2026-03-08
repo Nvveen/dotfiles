@@ -22,7 +22,7 @@ detect_environment() {
     if [[ "$CODESPACES" == "true" ]]; then
         OS_ENV="codespace"
     fi
-    if [[ "$NEALARCH" == "true" ]]; then
+    if [[ "$NEALARCH" == "1" || "$NEALARCH" == "true" ]]; then
         OS_ENV="nealarch"
     fi
 }
