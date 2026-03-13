@@ -1,5 +1,5 @@
 set relativenumber
 
-if filereadable(expand("~/.vimrc.local"))
-  source ~/.vimrc.local
+if filereadable(expand("~/.local/custom/.vimrc.local"))
+  source ~/.local/custom/.vimrc.local
 endif

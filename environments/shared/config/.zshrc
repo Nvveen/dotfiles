@@ -109,4 +109,4 @@ source $ZSH/oh-my-zsh.sh
 bindkey -v
 eval "$(starship init zsh)"
 
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+[[ -f ~/.local/custom/.zshrc.local.sh ]] && source ~/.local/custom/.zshrc.local.sh
