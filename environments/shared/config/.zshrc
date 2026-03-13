@@ -109,4 +109,9 @@ source $ZSH/oh-my-zsh.sh
 bindkey -v
 eval "$(starship init zsh)"
 
+cdtmp() {
+    local tmpdir=$(mktemp -d)
+    cd "$tmpdir" || return
+}
+
 [[ -f ~/.local/custom/.zshrc.local.sh ]] && source ~/.local/custom/.zshrc.local.sh
