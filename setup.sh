@@ -109,6 +109,27 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
+setup_local_custom() {
+    local LOCAL_CUSTOM_DIR="$HOME/.local/custom"
+    log "Creating local custom directory and files at $LOCAL_CUSTOM_DIR"
+    mkdir -p "$LOCAL_CUSTOM_DIR"
+    local LOCAL_FILES=(
+        ".zshrc.local.sh"
+        ".zprofile.local.sh"
+        ".vimrc.local"
+        ".gitconfig.local"
+    )
+    for file in "${LOCAL_FILES[@]}"; do
+        local filepath="$LOCAL_CUSTOM_DIR/$file"
+        if [[ ! -f "$filepath" ]]; then
+            touch "$filepath"
+            log "Created $filepath"
+        else
+            log "Skipping $filepath (already exists)"
+        fi
+    done
+}
+
 install_command() {
     detect_environment
     log "Environment detected: $OS_ENV"
@@ -121,6 +142,7 @@ install_command() {
     fi
     install_oh_my_zsh
     setup_config
+    setup_local_custom
     log "Installation complete"
 }
 
