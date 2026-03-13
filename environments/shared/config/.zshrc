@@ -1,3 +1,6 @@
+# Source .zprofile for non-login interactive shells (e.g., terminal emulators in codespaces)
+[[ ! -o login ]] && [[ -f ~/.zprofile ]] && source ~/.zprofile
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
